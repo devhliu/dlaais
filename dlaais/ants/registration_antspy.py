@@ -29,7 +29,7 @@ def rigid_reg_3d_nifti_groups(series_root, ref_file, in_filenames, out_filenames
     """
     if not os.path.exists(ref_file): return False
     fi = ants.image_read(ref_file)
-    fi_mask = ants.get_mask(fi)
+    fi_mask = ants.get_mask(fi, low_thresh=500, high_thresh=None)
     fi = ants.mask_image(fi, fi_mask)
     ants.image_write(fi_mask, os.path.join(os.path.dirname(series_root), 'head_mask.nii.gz'))
     ants.image_write(fi, os.path.join(os.path.dirname(series_root), 'CTP_P0.nii.gz'))
@@ -39,7 +39,7 @@ def rigid_reg_3d_nifti_groups(series_root, ref_file, in_filenames, out_filenames
         out_file = os.path.join(series_root, out_filename)
         out_nii_file = out_file + '.nii.gz'
         if not os.path.exists(in_file): continue
-        if os.path.exists(out_nii_file): continue
+        #if os.path.exists(out_nii_file): continue
         mv = ants.image_read(in_file)
         mv = ants.mask_image(mv, fi_mask)
         mx = ants.registration(fixed=fi, moving=mv, type_of_transform='Rigid', mask=fi_mask,
@@ -60,7 +60,7 @@ def rigid_reg_4d_nifti(patient_niix_root, dyn_1min_4d_niifilename, ref_nii_file=
     # decompose 4d nifti file
     dyn_4d_niifile = os.path.join(patient_niix_root, dyn_1min_4d_niifilename + '.nii.gz')
     dyn_4d_mc_niifile = os.path.join(patient_niix_root, dyn_1min_4d_niifilename + '_mc.nii.gz')
-    if os.path.exists(dyn_4d_mc_niifile): return True
+    #if os.path.exists(dyn_4d_mc_niifile): return True
     dyn_4d_mc_nii_root = os.path.join(patient_niix_root, dyn_1min_4d_niifilename)
     if os.path.exists(dyn_4d_mc_nii_root): shutil.rmtree(dyn_4d_mc_nii_root)
     if not os.path.exists(dyn_4d_mc_nii_root):
