@@ -68,6 +68,9 @@ def rigid_reg_4d_nifti(series_root, dyn4d_nii_filename, ref_nii_file='First', ex
         affine = nib_4d_img.affine
         np_4d_img = nib_4d_img.get_fdata()
         dtype = np_4d_img.dtype
+        
+        if len(np_4d_img.shape) != 4: return False
+
         N = np_4d_img.shape[-1]
         in_filenames = []
         out_filenames = []
@@ -75,8 +78,8 @@ def rigid_reg_4d_nifti(series_root, dyn4d_nii_filename, ref_nii_file='First', ex
             np_3d_img_1min = np_4d_img[:, :, :, i]
             nib_3d_img_1min = nib.Nifti1Image(np_3d_img_1min, affine=affine)
             nib.save(nib_3d_img_1min, os.path.join(dyn_4d_mc_nii_root, dyn4d_nii_filename + '_{:04d}.nii.gz'.format(i)))
-            in_filenames.append(series_root + '_{:04d}'.format(i))
-            out_filenames.append(series_root + '_{:04d}'.format(i)+ext)
+            in_filenames.append(dyn4d_nii_filename + '_{:04d}'.format(i))
+            out_filenames.append(dyn4d_nii_filename + '_{:04d}'.format(i)+ext)
         np_4d_img = None
         nib_4d_img = None
 
